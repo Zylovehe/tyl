@@ -4,6 +4,7 @@
 services:
   - type: web
     name: tyl-backend
+    runtime: java
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
     envVars:
