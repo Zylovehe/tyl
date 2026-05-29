@@ -6,24 +6,18 @@ services:
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
     envVars:
-      # Aiven MySQL数据库配置（需要手动在Render界面填写实际值）
-      - key: DB_HOST
-        sync: false
-      - key: DB_PORT
-        sync: false
-      - key: DB_USERNAME
-        sync: false
-      - key: DB_PASSWORD
-        sync: false
-      - key: DB_NAME
-        sync: false
-      # Spring Boot配置
+      # Spring Boot配置（预设值）
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: DB_DRIVER
         value: com.mysql.cj.jdbc.Driver
-      # JWT密钥（需要手动在Render界面填写实际值）
+      # Aiven MySQL数据库配置（需要在Render Dashboard手动填写）
+      - key: DB_HOST
+      - key: DB_PORT
+      - key: DB_USERNAME
+      - key: DB_PASSWORD
+      - key: DB_NAME
+      # JWT密钥（需要在Render Dashboard手动填写）
       - key: JWT_SECRET
-        sync: false
     healthCheckPath: /api/auth/login
     autoDeploy: true
