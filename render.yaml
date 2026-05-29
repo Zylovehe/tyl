@@ -1,0 +1,31 @@
+# Render.com 部署配置
+services:
+  - type: web
+    name: tyl-backend
+    env: java
+    repo: https://github.com/Zylovehe/tyl.git
+    branch: main
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      # Aiven MySQL数据库配置（需要手动在Render界面填写实际值）
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      # Spring Boot配置
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_DRIVER
+        value: com.mysql.cj.jdbc.Driver
+      # JWT密钥（需要手动在Render界面填写实际值）
+      - key: JWT_SECRET
+        sync: false
+    healthCheckPath: /api/auth/login
+    autoDeploy: true
