@@ -1,9 +1,8 @@
 # Render.com 部署配置
+# 注意: repo和branch应在Render Dashboard中通过GitHub连接时设置
 services:
   - type: web
     name: tyl-backend
-    repo: https://github.com/Zylovehe/tyl.git
-    branch: main
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
     envVars:
