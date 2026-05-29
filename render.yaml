@@ -2,7 +2,6 @@
 services:
   - type: web
     name: tyl-backend
-    env: java
     repo: https://github.com/Zylovehe/tyl.git
     branch: main
     buildCommand: mvn clean package -DskipTests
