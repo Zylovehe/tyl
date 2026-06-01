@@ -1,61 +1,59 @@
 @echo off
 chcp 65001 >nul
 echo ========================================
-echo   Railway.app 快速部署向导
+echo   Railway.app 一键部署向导
 echo ========================================
 echo.
 
 echo [提示] 本脚本将引导你完成Railway部署
 echo.
 echo 优势:
-echo - 自动检测Java项目（无需配置Build/Start命令）
+echo - 自动检测Java/Maven项目（无需配置Build/Start命令）
 echo - 可视化环境变量管理
-echo - 快速部署（比Render更快）
+echo - 快速部署（比Render更快，约2-3分钟）
 echo - $5免费额度（足够使用数月）
+echo - CORS跨域已配置，支持所有前端访问
 echo.
 
 pause
 
 echo.
 echo ========================================
-echo   步骤1: 注册Railway账号
+echo   步骤1: 推送代码到GitHub
 echo ========================================
 echo.
-echo 请访问: https://railway.app
-echo.
-echo 操作:
-echo 1. 点击 "Login" → "Sign in with GitHub"
-echo 2. 授权Railway访问GitHub
-echo 3. 完成注册
-echo.
 
-set /p step1_done="已完成注册？(y/n): "
-if /i not "%step1_done%"=="y" (
-    echo [提示] 请先完成注册，然后重新运行此脚本
+cd /d %~dp0
+
+echo [检查] Git远程仓库...
+git remote -v
+
+if %errorlevel% neq 0 (
+    echo [错误] 未找到Git仓库，请先初始化Git
     pause
-    exit /b 0
+    exit /b 1
+)
+
+echo.
+echo [执行] 提交最新更改...
+git add .
+git commit -m "Cleanup files and prepare for Railway deployment"
+
+echo.
+echo [执行] 推送到GitHub...
+git push origin main
+
+if %errorlevel% equ 0 (
+    echo ✅ 代码推送成功！
+) else (
+    echo ❌ 推送失败，请检查网络连接和GitHub权限
+    pause
+    exit /b 1
 )
 
 echo.
 echo ========================================
-echo   步骤2: 创建新项目
-echo ========================================
-echo.
-echo 在Railway Dashboard中:
-echo.
-echo 1. 点击 "New Project"
-echo 2. 选择 "Deploy from GitHub repo"
-echo 3. 搜索并选择: Zylovehe/tyl
-echo 4. 点击 "Deploy Now"
-echo.
-echo 注意: Railway会自动检测pom.xml并构建项目
-echo.
-
-pause
-
-echo.
-echo ========================================
-echo   步骤3: 准备Aiven MySQL数据库
+echo   步骤2: 准备Aiven MySQL数据库
 echo ========================================
 echo.
 
@@ -88,6 +86,41 @@ if /i "%has_aiven%"=="n" (
     echo 请确保已完成以上步骤后再继续
     echo.
 )
+
+echo.
+echo ========================================
+echo   步骤3: 在Railway上创建项目
+echo ========================================
+echo.
+
+echo [方法1] 从GitHub导入（推荐）
+echo ----------------------------------------
+echo.
+echo 1. 访问: https://railway.app
+echo 2. 登录: Sign in with GitHub
+echo 3. 点击: New Project → Deploy from GitHub repo
+echo 4. 选择仓库: Zylovehe/tyl
+echo 5. 点击: Deploy Now
+echo.
+
+echo [方法2] 使用Railway CLI
+echo ----------------------------------------
+echo.
+echo # 安装CLI
+echo npm install -g @railway/cli
+echo.
+echo # 登录
+echo railway login
+echo.
+echo # 初始化项目
+echo cd e:\testDemo\tongyiling-project\tyl
+echo railway init
+echo.
+echo # 部署
+echo railway up
+echo.
+
+pause
 
 echo.
 echo ========================================
@@ -131,8 +164,9 @@ echo.
 echo Railway会自动:
 echo 1. 检测 pom.xml 文件
 echo 2. 识别为Maven项目
-echo 3. 执行 mvn clean package
+echo 3. 执行 mvn clean package -DskipTests
 echo 4. 启动应用 java -jar target/*.jar
+echo 5. 分配域名（如: https://tyl-production.up.railway.app）
 echo.
 echo 查看实时日志:
 echo - 点击 "Deployments" 标签
@@ -143,14 +177,8 @@ pause
 
 echo.
 echo ========================================
-echo   步骤6: 获取域名并测试
+echo   步骤6: 验证部署并测试API
 echo ========================================
-echo.
-echo 部署成功后:
-echo.
-echo 1. 点击 "Settings" 标签
-echo 2. 找到 "Domains" 部分
-echo 3. 复制生成的域名（如: https://tyl-production.up.railway.app）
 echo.
 
 set /p railway_domain="请输入你的Railway域名（例如: https://xxx.up.railway.app）: "
@@ -180,14 +208,22 @@ echo ========================================
 echo   ✅ 部署完成！
 echo ========================================
 echo.
+echo  恭喜！后端已成功部署到Railway！
+echo.
+echo 特性:
+echo - ✅ 自动检测Maven项目（零配置）
+echo - ✅ 快速部署（2-3分钟）
+echo - ✅ CORS跨域已配置
+echo - ✅ $5免费额度
+echo - ✅ 每次推送代码自动重新部署
+echo.
 echo 下一步:
 echo 1. 记录你的Railway域名
 echo 2. 更新前端项目的API地址
 echo 3. 测试完整的前后端联调
+echo 4. 每次修改代码后只需 git push，Railway会自动部署
 echo.
 echo  详细文档: RAILWAY_DEPLOY.md
-echo.
-echo 🎉 恭喜！后端已成功部署到Railway！
 echo.
 
 pause
