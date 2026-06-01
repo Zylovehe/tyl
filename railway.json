@@ -1,0 +1,14 @@
+{
+  "build": {
+    "builder": "Nixpacks",
+    "buildCommand": "",
+    "startCommand": "java -jar tyl-system-1.0.0.jar --server.port=${PORT}",
+    "nixpacksPlan": {
+      "phases": {
+        "setup": {
+          "aptPkgs": ["openjdk-11-jre"]
+        }
+      }
+    }
+  }
+}
