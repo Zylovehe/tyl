@@ -1,6 +1,5 @@
 package com.tyl.system.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.tyl.system.common.JwtUtil;
 import com.tyl.system.dto.LoginRequest;
 import com.tyl.system.dto.LoginResponse;
@@ -12,11 +11,9 @@ import com.tyl.system.mapper.SysRoleMapper;
 import com.tyl.system.mapper.SysUserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +36,8 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     /**
      * 用户登录
      */
@@ -49,9 +48,8 @@ public class AuthService {
             throw new RuntimeException("用户名或密码错误");
         }
 
-        // 验证密码
-        String encryptPassword = DigestUtils.md5DigestAsHex(request.getPassword().getBytes(StandardCharsets.UTF_8));
-        if (!encryptPassword.equals(user.getPassword())) {
+        // 验证密码（BCrypt）
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
         }
 

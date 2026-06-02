@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.tyl.system.entity.SysUser;
 import com.tyl.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,6 +18,8 @@ public class UserService {
 
     @Autowired
     private SysUserMapper userMapper;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * 根据ID查询用户
@@ -40,13 +40,10 @@ public class UserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void save(SysUser user) {
-        // 加密密码
+        // BCrypt加密密码
         if (user.getPassword() != null) {
-            String encryptPassword = DigestUtils.md5DigestAsHex(user.getPassword().getBytes(StandardCharsets.UTF_8));
-            user.setPassword(encryptPassword);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        user.setCreateTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
         user.setDeleted(0);
         userMapper.insert(user);
     }
@@ -58,10 +55,8 @@ public class UserService {
     public void update(SysUser user) {
         // 如果修改密码，需要加密
         if (user.getPassword() != null) {
-            String encryptPassword = DigestUtils.md5DigestAsHex(user.getPassword().getBytes(StandardCharsets.UTF_8));
-            user.setPassword(encryptPassword);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        user.setUpdateTime(LocalDateTime.now());
         userMapper.updateById(user);
     }
 
