@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @MapperScan("com.tyl.system.mapper")
@@ -16,26 +17,33 @@ public class TylApplication implements CommandLineRunner {
     @Autowired
     private SysUserMapper userMapper;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public static void main(String[] args) {
-        SpringApplication.run(TylApplication.class,args);
+        SpringApplication.run(TylApplication.class, args);
     }
 
     @Override
     public void run(String... args) {
-        // 密码123456 BCrypt加密
-        String pwd="$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4tMZGkc";
-        SysUser user=new SysUser();
-        user.setUsername("admin");
-        user.setPassword(pwd);
-        user.setNickname("管理员");
-        user.setDeleted(0);
+        // 密码123456，运行时动态生成BCrypt哈希
+        String pwd = passwordEncoder.encode("123456");
 
-        // 不存在admin才插入
-        long count = userMapper.selectCount(
-                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername,"admin")
+        SysUser existingUser = userMapper.selectOne(
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, "admin")
         );
-        if(count == 0){
+
+        if (existingUser == null) {
+            // 首次启动：创建admin用户
+            SysUser user = new SysUser();
+            user.setUsername("admin");
+            user.setPassword(pwd);
+            user.setNickname("管理员");
+            user.setDeleted(0);
             userMapper.insert(user);
+        } else {
+            // admin已存在：更新密码为正确的BCrypt哈希（修复之前错误哈希的问题）
+            existingUser.setPassword(pwd);
+            userMapper.updateById(existingUser);
         }
     }
 }

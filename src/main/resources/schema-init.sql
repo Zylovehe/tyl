@@ -15,6 +15,4 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   UNIQUE KEY `uk_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
--- 插入admin账号 密码123456（BCrypt加密）
-INSERT IGNORE INTO `sys_user` (`username`, `password`, `nickname`, `deleted`)
-VALUES ('admin','$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','系统管理员',0);
+-- admin账号由 TylApplication.java 启动时自动创建（密码123456，BCrypt动态加密）
