@@ -23,7 +23,7 @@ public class TylApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // 密码123456 BCrypt加密
-        String pwd="$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi";
+        String pwd="$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4tMZGkc";
         SysUser user=new SysUser();
         user.setUsername("admin");
         user.setPassword(pwd);
