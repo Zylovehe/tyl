@@ -10,7 +10,10 @@ spring:
     username: ${MYSQLUSER}
     password: ${MYSQLPASSWORD}
     schema: classpath:schema-init.sql
-    initialization-mode: always
+    sql:
+    init:
+      mode: always
+    
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
