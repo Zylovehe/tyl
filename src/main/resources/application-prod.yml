@@ -6,10 +6,14 @@ spring:
     name: tyl-system
   datasource:
     # 自动检测数据库类型（MySQL或PostgreSQL）
-    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
-    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/tyl_system?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
+    schema: classpath:schema-init.sql
+     sql:
+     init:
+      mode: always
     
   # JPA配置（PostgreSQL需要）
   jpa:
