@@ -22,6 +22,16 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+  global-config:
+    db-config:
+      # 开启根据实体自动建表
+      table-underline: true
+    # 关闭spring自动执行sql（避免配置冲突）
+  spring:
+   sql:
+    init:
+      mode: never 
+
 # JWT配置
 jwt:
   secret: tylSystemSecretKey2024
