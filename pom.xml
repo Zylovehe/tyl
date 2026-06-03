@@ -69,6 +69,18 @@
             <version>${jwt.version}</version>
         </dependency>
 
+        <!-- JAXB API（JDK 9+ 已移除，jjwt 0.9.x 需要 javax 命名空间） -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.8</version>
+        </dependency>
+
         <!-- FastJSON -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
