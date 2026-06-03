@@ -1,42 +1,33 @@
 server:
-  port: ${PORT:8080}  # Render会提供PORT环境变量
+  port: ${PORT:8080}
 
 spring:
   application:
     name: tyl-system
   datasource:
-    # 自动检测数据库类型（MySQL或PostgreSQL）
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${MYSQLUSER}
     password: ${MYSQLPASSWORD}
   sql:
     init:
-      mode:never
-      # mode: always
-      # schema-locations: classpath:schema-init.sql
-  # JPA配置（PostgreSQL需要）
-  jpa:
-    hibernate:
-      ddl-auto: none  # 不自动创建表，使用SQL脚本
-    properties:
-      hibernate:
-        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.MySQL5InnoDBDialect}
+      mode: always
+      schema-locations: classpath:schema-init.sql
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   type-aliases-package: com.tyl.system.entity
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl  # 生产环境关闭SQL日志
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
       table-underline: true
 
 # JWT配置
 jwt:
-  secret: ${JWT_SECRET:tylSystemSecretKey2024ProductionStronger}  # 生产环境建议使用环境变量
-  expiration: 86400000  # 24小时
+  secret: ${JWT_SECRET:tylSystemSecretKey2024ProductionStronger}
+  expiration: 86400000
 
 # 日志配置
 logging:
