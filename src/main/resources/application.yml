@@ -6,17 +6,13 @@ spring:
     name: tyl-system
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
     username: ${MYSQLUSER}
     password: ${MYSQLPASSWORD}
-    # url: jdbc:mysql://127.0.0.1:3306/railway?useUnicode=true&characterEncoding=utf8
-    # username: root
-    # password: root
   sql:
     init:
-     mode:never
-      # mode: always
-      # schema-locations: classpath:schema-init.sql
+      mode: always
+      schema-locations: classpath:schema-init.sql
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

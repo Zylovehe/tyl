@@ -32,18 +32,43 @@ public class TylApplication implements CommandLineRunner {
                 new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, "admin")
         );
 
+        Long adminId;
         if (existingUser == null) {
+            // 首次启动：创建admin用户
             SysUser user = new SysUser();
             user.setUsername("admin");
             user.setPassword(pwd);
             user.setNickname("管理员");
             user.setDeleted(0);
             userMapper.insert(user);
+            adminId = user.getId();
             System.out.println("[初始化] admin 用户已创建，密码: 123456");
         } else {
+            // 已存在：更新密码 + 获取ID
             existingUser.setPassword(pwd);
             userMapper.updateById(existingUser);
+            adminId = existingUser.getId();
             System.out.println("[初始化] admin 密码已更新为: 123456");
+        }
+
+        // 确保 admin 用户关联超级管理员角色（role_id=1）
+        int count = userMapper.selectCount(
+                new LambdaQueryWrapper<SysUser>()
+                        .eq(SysUser::getUsername, "admin")
+                        .apply("EXISTS (SELECT 1 FROM sys_user_role WHERE user_id = {0} AND role_id = 1)", adminId)
+        ) > 0 ? 1 : 0;
+
+        // 通过原生SQL插入用户-角色关联（如果不存在）
+        if (count == 0) {
+            try {
+                // MyBatis Plus 不直接支持 INSERT IGNORE，用 BaseMapper 的 insert 不适用关联表
+                // 这里通过 @Select 注解或直接 SQL 执行
+                userMapper.insertUserRole(adminId, 1L);
+                System.out.println("[初始化] admin 已关联超级管理员角色");
+            } catch (Exception e) {
+                // 关联可能已存在（并发场景），忽略即可
+                System.out.println("[初始化] 用户角色关联已存在或创建失败: " + e.getMessage());
+            }
         }
     }
 }

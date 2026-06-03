@@ -22,4 +22,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * 查询用户的角色ID列表
      */
     List<Long> selectRoleIdsByUserId(@Param("userId") Long userId);
+
+    /**
+     * 插入用户-角色关联（幂等）
+     */
+    int insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 }
