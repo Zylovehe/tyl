@@ -56,6 +56,10 @@ public class AuthService {
 
         // 调试：打印数据库中的密码哈希
         System.out.println("数据库中密码哈希: " + user.getPassword());
+//         User user = userMapper.selectByUsername(dto.getUsername());
+// // 新增日志
+// log.info("【远程库查出密文】{}",user.getPassword());
+// log.info("【前端输入明文】{}",dto.getPassword());
 
 
         // 验证密码（BCrypt）

@@ -12,8 +12,9 @@ spring:
     password: ${MYSQLPASSWORD}
   sql:
     init:
-      mode: always
-      schema-locations: classpath:schema-init.sql
+      mode:never
+      # mode: always
+      # schema-locations: classpath:schema-init.sql
   # JPA配置（PostgreSQL需要）
   jpa:
     hibernate:
