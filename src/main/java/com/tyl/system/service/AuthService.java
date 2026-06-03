@@ -36,20 +36,31 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     /**
      * 用户登录
      */
     public LoginResponse login(LoginRequest request) {
+        // 调试：打印前端传入的用户名和密码
+        System.out.println("前端传入用户名: " + request.getUsername());
+        System.out.println("前端传入密码: " + request.getPassword());
+
         // 查询用户
         SysUser user = userMapper.selectByUsername(request.getUsername());
+        System.out.println("user---------------: " + user);
         if (user == null) {
-            throw new RuntimeException("用户名或密码错误");
+            System.out.println("错误: 用户不存在");
+            throw new RuntimeException("用户名或密码错误验验证；看一下如何操作操作当前的密码");
         }
+
+        // 调试：打印数据库中的密码哈希
+        System.out.println("数据库中密码哈希: " + user.getPassword());
+
 
         // 验证密码（BCrypt）
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            System.out.println("错误: 密码验证失败");
             throw new RuntimeException("用户名或密码错误");
         }
 
